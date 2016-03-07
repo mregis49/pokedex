@@ -22,6 +22,14 @@ class Pokemon {
     private var _nextEvolutionId: String!
     private var _nextEvolutionLvl: String!
     private var _pokemonURL: String!
+    private var _moves: [Move]!
+    
+    var moves: [Move] {
+        if _moves == nil {
+            _moves = [Move]()
+        }
+        return _moves
+    }
     
     var name: String {
         return _name
@@ -106,7 +114,10 @@ class Pokemon {
     func downloadPokemonDetails(completed: DownloadComplete) {
         
         let url = NSURL(string: _pokemonURL)!
-        Alamofire.request(.GET, url).responseJSON { response in let result = response.result
+        
+        Alamofire.request(.GET, url).responseJSON { response in
+            
+            let result = response.result
             
             if let dict = result.value as? Dictionary<String, AnyObject> {
                 
@@ -126,10 +137,8 @@ class Pokemon {
                     self._defense = "\(defense)"
                 }
                 
-                print(self._weight)
-                print(self._height)
-                print(self._attack)
-                print(self._defense)
+
+                // Pokemon type
                 
                 if let types = dict["types"] as? [Dictionary<String, String>] where types.count > 0  {
                 
@@ -147,8 +156,8 @@ class Pokemon {
                 } else {
                     self._type = ""
                 }
-                print(self._type)
-                
+        
+                // Description
                 if let descArr = dict["descriptions"] as? [Dictionary<String, String>] where descArr.count > 0 {
                     
                     if let url = descArr[0]["resource_uri"] {
@@ -158,7 +167,8 @@ class Pokemon {
                             let desResult = response.result
                             if let descDict = desResult.value as? Dictionary<String, AnyObject> {
                                 
-                                if let description = descDict["description"] as? String {
+                                if let descrip = descDict["description"] as? String {
+                                    let description = descrip.stringByReplacingOccurrencesOfString("POKMON", withString: "pokemon")
                                     self._description = description
                                     print(self._description)
                                 }
@@ -171,7 +181,8 @@ class Pokemon {
                 } else {
                     self._description = ""
                 }
-                
+
+                // Evolutions
                 if let evolutions = dict["evolutions"] as? [Dictionary<String, AnyObject>] where evolutions.count > 0 {
                    
                     if let to = evolutions[0]["to"] as? String {
@@ -187,17 +198,68 @@ class Pokemon {
                                 self._nextEvolutionId = num
                                 self._nextEvolutionTxt = to
                                 
-                                if let lvl = evolutions[0]["level"] as? Int {
+                                if let lvlExist = evolutions[0]["level"] {
+                                    if let lvl = lvlExist as? Int {
                                     self._nextEvolutionLvl = "\(lvl)"
+                                    }
+                                    
+                                } else {
+                                    self._nextEvolutionLvl = ""
+                                    
                                 }
-                                
-                                print(self._nextEvolutionId)
-                                print(self._nextEvolutionTxt)
-                                print(self._nextEvolutionLvl)
+
                             }
                         }
                     }
                     
+                }
+                
+                if let moves = dict["moves"] as? [Dictionary<String, AnyObject>] where moves.count > 0 {
+                    
+                    var moveName = ""
+                    var moveDesc = ""
+                    var movePower = ""
+                    var moveAccuracy = ""
+                    
+                    for move in moves {
+                        
+                        if let url = move["resource_uri"] as? String {
+                            let nsurl = NSURL(string: "\(URL_BASE)\(url)")!
+                            Alamofire.request(.GET, nsurl).responseJSON { response in
+                                
+                                let moveResult = response.result
+                                
+                                if let moveDict = moveResult.value as? Dictionary<String, AnyObject> {
+                                    
+                                    if let name = moveDict["name"] as? String {
+                                        moveName = name
+                                    }
+                                    
+                                    if let desc = moveDict["description"] as? String {
+                                        moveDesc = desc
+                                    }
+                                    
+                                    if let power = moveDict["power"] as? Int {
+                                        movePower = "\(power)"
+                                    }
+                                    
+                                    if let accuracy = moveDict["accuracy"] as? Int {
+                                        moveAccuracy = "\(accuracy)"
+                                    }
+                                    
+                                    let move = Move(name: moveName, description: moveDesc, accuracy: moveAccuracy, power: movePower)
+                                    
+                                    self._moves.append(move)
+                                    print(move.name)
+                                    print(move.description)
+                                    print(move.power)
+                                    print(move.accuracy)
+                                    
+                                }
+                                
+                            }
+                        }
+                    }
                 }
                 
             }

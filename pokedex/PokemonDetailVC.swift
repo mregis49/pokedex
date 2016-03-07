@@ -8,9 +8,15 @@
 
 import UIKit
 
-class PokemonDetailVC: UIViewController {
-
+class PokemonDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
     var pokemon: Pokemon!
+    
+    @IBOutlet var segCtrl: UISegmentedControl!
+    @IBOutlet var bioStack: UIStackView!
+    @IBOutlet var evoStack: UIStackView!
+    @IBOutlet var evoView: UIView!
+    @IBOutlet var movesTableView: UITableView!
     
     @IBOutlet var nameLbl: UILabel!
     @IBOutlet var mainImg: UIImageView!
@@ -29,15 +35,22 @@ class PokemonDetailVC: UIViewController {
         super.viewDidLoad()
 
         nameLbl.text = pokemon.name.capitalizedString
-        var img = UIImage(named: "\(pokemon.pokedexId)")
+        let img = UIImage(named: "\(pokemon.pokedexId)")
         mainImg.image = img
         currentEvoImg.image = img
         
         pokemon.downloadPokemonDetails { () -> () in
             //this will be called after download is done
             self.updateUI()
+            self.movesTableView.reloadData()
         }
+        movesTableView.hidden = true
+        movesTableView.delegate = self
+        movesTableView.dataSource = self
+    }
     
+    override func viewDidAppear(animated: Bool) {
+        movesTableView.reloadData()
     }
     
     func updateUI() {
@@ -59,20 +72,49 @@ class PokemonDetailVC: UIViewController {
             
             if pokemon.nextEvolutionLvl != "" {
                 str += " - LVL \(pokemon.nextEvolutionLvl)"
+                evoLbl.text = str
             }
         }
-        
-        
     }
 
     @IBAction func backBtnPressed(sender: AnyObject) {
       dismissViewControllerAnimated(true, completion: nil)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @IBAction func segCtrlPressed(sender: AnyObject) {
+    
+          if segCtrl.selectedSegmentIndex == 0 {
+            movesTableView.hidden = true
+            bioStack.hidden = false
+            evoStack.hidden = false
+            evoView.hidden = false
+            
+        } else if segCtrl.selectedSegmentIndex == 1 {
+            movesTableView.hidden = false
+            bioStack.hidden = true
+            evoStack.hidden = true
+            evoView.hidden = true
+            movesTableView.reloadData()
+        }
+    }
+
+
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        if let cell = tableView.dequeueReusableCellWithIdentifier("MovesCell") as? MovesCell {
+            
+            let move = pokemon.moves[indexPath.row]
+            cell.configureCell(move)
+            return cell
+            
+        } else {
+            return MovesCell()
+        }
     }
     
-
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            return pokemon.moves.count
+    }
+    
 }
