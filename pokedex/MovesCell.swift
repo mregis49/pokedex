@@ -17,11 +17,13 @@ class MovesCell: UITableViewCell {
     
     var move: Move!
 
-    override func awakeFromNib() {
+        override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+            
+        moveNameLbl.layer.cornerRadius = 5.0
+        moveNameLbl.layer.masksToBounds = true
     }
-    
+
     func configureCell(move: Move) {
         moveNameLbl.text = move.name
         moveDescLbl.text = move.description
