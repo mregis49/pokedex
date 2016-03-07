@@ -29,7 +29,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         initAudio()
         parsePokemonCSV()
-            
     }
     
     func initAudio() {
@@ -79,7 +78,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             
             
             cell.configureCell(poke)
-        
             return cell
         
         } else {
@@ -136,6 +134,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             inSearchMode = false
             view.endEditing(true)
             collection.reloadData()
+            
         } else {
             inSearchMode = true
             let lower = searchBar.text!.lowercaseString

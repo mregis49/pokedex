@@ -49,7 +49,5 @@ class Move {
         self._description = description
         self._accuracy = accuracy
         self._power = power
-    }
-    
-    
+    }    
 }

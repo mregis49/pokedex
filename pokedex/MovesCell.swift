@@ -28,5 +28,4 @@ class MovesCell: UITableViewCell {
         movePowerLbl.text = move.power
         moveAccuracyLbl.text = move.accuracy
     }
-
 }

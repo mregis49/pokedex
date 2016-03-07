@@ -13,6 +13,7 @@ class PokemonDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     var pokemon: Pokemon!
     
     @IBOutlet var segCtrl: UISegmentedControl!
+    
     @IBOutlet var bioStack: UIStackView!
     @IBOutlet var evoStack: UIStackView!
     @IBOutlet var evoView: UIView!
@@ -44,6 +45,7 @@ class PokemonDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
             self.updateUI()
             self.movesTableView.reloadData()
         }
+        
         movesTableView.hidden = true
         movesTableView.delegate = self
         movesTableView.dataSource = self
@@ -65,6 +67,7 @@ class PokemonDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         if pokemon.nextEvolutionId == "" {
             evoLbl.text = "No Evolutions"
             nextEvoImg.hidden = true
+            
         } else {
             nextEvoImg.hidden = false
             nextEvoImg.image = UIImage(named: pokemon.nextEvolutionId)
@@ -83,7 +86,6 @@ class PokemonDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     
     @IBAction func segCtrlPressed(sender: AnyObject) {
-    
           if segCtrl.selectedSegmentIndex == 0 {
             movesTableView.hidden = true
             bioStack.hidden = false
@@ -99,11 +101,8 @@ class PokemonDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         }
     }
 
-
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
         if let cell = tableView.dequeueReusableCellWithIdentifier("MovesCell") as? MovesCell {
-            
             let move = pokemon.moves[indexPath.row]
             cell.configureCell(move)
             return cell
@@ -115,6 +114,5 @@ class PokemonDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return pokemon.moves.count
-    }
-    
+    }    
 }

@@ -139,7 +139,6 @@ class Pokemon {
                 
 
                 // Pokemon type
-                
                 if let types = dict["types"] as? [Dictionary<String, String>] where types.count > 0  {
                 
                     if let name = types[0]["name"] {
@@ -207,13 +206,12 @@ class Pokemon {
                                     self._nextEvolutionLvl = ""
                                     
                                 }
-
                             }
                         }
                     }
-                    
                 }
                 
+                //Moves
                 if let moves = dict["moves"] as? [Dictionary<String, AnyObject>] where moves.count > 0 {
                     
                     var moveName = ""
@@ -256,12 +254,10 @@ class Pokemon {
                                     print(move.accuracy)
                                     
                                 }
-                                
                             }
                         }
                     }
                 }
-                
             }
         }
     }
