@@ -84,6 +84,10 @@ class PokemonDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSou
       dismissViewControllerAnimated(true, completion: nil)
     }
     
+    override func prefersStatusBarHidden() -> Bool {
+        return true 
+    }
+    
     
     @IBAction func segCtrlPressed(sender: AnyObject) {
           if segCtrl.selectedSegmentIndex == 0 {
